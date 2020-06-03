@@ -6,6 +6,9 @@ import { User } from "./entities/User";
 import setUserRoutes from "./routes/setUsersRoutes";
 import setPPPerformanceRoutes from "./routes/setPPPerformanceRoutes";
 import setFeedbackRoutes from "./routes/setFeedbackRoutes";
+import * as cors from "cors";
+
+const allowed = "http://localhost:3000";
 
 // create typeorm connection
 createConnection().then(connection => {
@@ -13,6 +16,14 @@ createConnection().then(connection => {
 
   // create and setup express app
   const app = express();
+
+  // allow cors from 3000 (web)
+  app.use(
+    cors({
+      origin: allowed,
+    })
+  );
+
   app.use(bodyParser.json());
 
   // register routes
