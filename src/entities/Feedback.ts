@@ -23,11 +23,17 @@ export class Feedback {
   @ManyToOne(type => User, (user: User) => user.feedbacks)
   user: User;
 
+  @Column({ nullable: false })
+  userId: string;
+
   @ManyToOne(
     type => PPPerformance,
     (performance: PPPerformance) => performance.feedbacks
   )
   performance: PPPerformance;
+
+  @Column({ nullable: false })
+  performanceId: string;
 
   @CreateDateColumn({ type: "timestamp" })
   createdAt: number;

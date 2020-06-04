@@ -5,6 +5,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  RelationId,
 } from "typeorm";
 import { PPPerformance } from "./PPPerformance";
 import { Feedback } from "./Feedback";
@@ -32,8 +33,14 @@ export class User {
   )
   performances: PPPerformance[];
 
+  @RelationId((user: User) => user.performances)
+  performanceIds: string[];
+
   @OneToMany(type => Feedback, (feedback: Feedback) => feedback.user)
   feedbacks: Feedback[];
+
+  @RelationId((user: User) => user.feedbacks)
+  feedbackIds: string[];
 
   static fromJson(json: any): User {
     const user = new User();

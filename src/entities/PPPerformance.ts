@@ -6,6 +6,7 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  RelationId,
 } from "typeorm";
 import { User } from "./User";
 import { Feedback } from "./Feedback";
@@ -24,8 +25,14 @@ export class PPPerformance {
   @ManyToOne(type => User, (user: User) => user.performances)
   user: User;
 
-  @OneToMany(type => Feedback, (feedback: Feedback) => feedback.user)
+  @Column({ nullable: false })
+  userId: string;
+
+  @OneToMany(type => Feedback, (feedback: Feedback) => feedback.performance)
   feedbacks: Feedback[];
+
+  @RelationId((performance: PPPerformance) => performance.feedbacks)
+  feedbackIds: string[];
 
   @CreateDateColumn({ type: "timestamp" })
   createdAt: number;

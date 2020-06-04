@@ -16,14 +16,25 @@ const setPPPerformanceRoutes = (app: Express, connection: Connection) => {
   const userRepository = connection.getRepository(User);
 
   app.get("/performances", async function (req: Request, res: Response) {
-    const performances = await performanceRepository.find();
+    const performances = await performanceRepository.find({
+      relations: ["user", "feedbacks"],
+    });
     res.json(performances);
   });
 
   app.get("/performances/:id", async function (req: Request, res: Response) {
     const result = await performanceRepository.findOne(req.params.id, {
-      relations: ["user", "feedbacks"],
+      relations: ["user"],
+      // Also return the user associate with the feedback
+      join: {
+        alias: "performance",
+        leftJoinAndSelect: {
+          feedbacks: "performance.feedbacks",
+          user: "feedbacks.user",
+        },
+      },
     });
+
     return res.send(result);
   });
 

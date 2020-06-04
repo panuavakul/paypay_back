@@ -19,12 +19,14 @@ const setFeedbackRoutes = (app: Express, connection: Connection) => {
   const feedbackRepository = connection.getRepository(Feedback);
 
   app.get("/feedbacks", async function (req: Request, res: Response) {
-    const feedbacks = await feedbackRepository.find();
+    const feedbacks = await feedbackRepository.find({ relations: ["user"] });
     res.json(feedbacks);
   });
 
   app.get("/feedbacks/:id", async function (req: Request, res: Response) {
-    const result = await feedbackRepository.findOne(req.params.id);
+    const result = await feedbackRepository.findOne(req.params.id, {
+      relations: ["user"],
+    });
     return res.send(result);
   });
 

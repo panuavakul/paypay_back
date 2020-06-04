@@ -13,14 +13,16 @@ const setUsersRoutes = (app: Express, connection: Connection) => {
   const userRepository = connection.getRepository(User);
 
   app.get("/users", async function (req: Request, res: Response) {
+    const ids = req.param("ids");
     const users = await userRepository.find();
-    res.json(users);
+    return res.json(users);
   });
 
   app.get("/users/:id", async function (req: Request, res: Response) {
     const result = await userRepository.findOne(req.params.id, {
       relations: ["performances", "feedbacks"],
     });
+
     return res.send(result);
   });
 
