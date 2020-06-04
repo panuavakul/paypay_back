@@ -1,5 +1,5 @@
 import { Express } from "express";
-import { Connection } from "typeorm";
+import { Connection, In } from "typeorm";
 import { Request, Response } from "express";
 import { PPPerformance } from "../entities/PPPerformance";
 import { User } from "../entities/User";
@@ -51,6 +51,12 @@ const setPPPerformanceRoutes = (app: Express, connection: Connection) => {
 
     performance.date = body.date;
 
+    const reviewerIds: string[] = req.body.reviewerIds;
+    const reviewers = await userRepository.find({
+      where: { id: In(reviewerIds) },
+    });
+    performance.reviewers = reviewers;
+
     const result = await performanceRepository.save(performance);
 
     return res.send(result);
@@ -59,11 +65,17 @@ const setPPPerformanceRoutes = (app: Express, connection: Connection) => {
   app.put("/performances/:id", async function (req: Request, res: Response) {
     /// Do not allow change userId and feedbackIds
     const { userId, feedbackIds, ...body } = req.body;
-
     const performance = await performanceRepository.findOne(req.params.id);
 
+    const reviewerIds: string[] = req.body.reviewerIds;
+    const reviewers = await userRepository.find({
+      where: { id: In(reviewerIds) },
+    });
+    performance.reviewers = reviewers;
+
     performanceRepository.merge(performance, body);
-    const result = await userRepository.save(performance);
+
+    const result = await performanceRepository.save(performance);
     return res.send(result);
   });
 

@@ -7,6 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   RelationId,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { User } from "./User";
 import { Feedback } from "./Feedback";
@@ -33,6 +35,10 @@ export class PPPerformance {
 
   @RelationId((performance: PPPerformance) => performance.feedbacks)
   feedbackIds: string[];
+
+  @ManyToMany(type => User)
+  @JoinTable()
+  reviewers: User[];
 
   @CreateDateColumn({ type: "timestamp" })
   createdAt: number;
