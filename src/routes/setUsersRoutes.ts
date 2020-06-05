@@ -1,7 +1,8 @@
 import { Express } from "express";
-import { Connection } from "typeorm";
+import { Connection, In } from "typeorm";
 import { Request, Response } from "express";
 import { User } from "../entities/User";
+import { PPPerformance } from "../entities/PPPerformance";
 
 interface Body {
   firstName: string;
@@ -11,6 +12,7 @@ interface Body {
 /// Set the Users routes
 const setUsersRoutes = (app: Express, connection: Connection) => {
   const userRepository = connection.getRepository(User);
+  const performanceRepository = connection.getRepository(PPPerformance);
 
   app.get("/users", async function (req: Request, res: Response) {
     const ids = req.param("ids");
@@ -24,6 +26,26 @@ const setUsersRoutes = (app: Express, connection: Connection) => {
     });
 
     return res.send(result);
+  });
+
+  app.get("/users/:id/performances", async function (
+    req: Request,
+    res: Response
+  ) {
+    const result = await userRepository.findOne(req.params.id, {
+      relations: ["assigneds"],
+      join: {
+        alias: "assigned_user",
+        leftJoinAndSelect: {
+          assigneds: "assigned_user.assigneds",
+          user: "assigneds.user",
+        },
+      },
+    });
+
+    const assigneds = result.assigneds;
+
+    return res.send(assigneds);
   });
 
   app.post("/users", async function (req: Request, res: Response) {

@@ -36,7 +36,7 @@ export class PPPerformance {
   @RelationId((performance: PPPerformance) => performance.feedbacks)
   feedbackIds: string[];
 
-  @ManyToMany(type => User)
+  @ManyToMany(type => User, (user: User) => user.assigneds)
   @JoinTable()
   reviewers: User[];
 

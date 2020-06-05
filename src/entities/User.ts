@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   RelationId,
+  ManyToMany,
 } from "typeorm";
 import { PPPerformance } from "./PPPerformance";
 import { Feedback } from "./Feedback";
@@ -41,6 +42,12 @@ export class User {
 
   @RelationId((user: User) => user.feedbacks)
   feedbackIds: string[];
+
+  @ManyToMany(
+    () => PPPerformance,
+    (performance: PPPerformance) => performance.reviewers
+  )
+  assigneds: PPPerformance[];
 
   static fromJson(json: any): User {
     const user = new User();
