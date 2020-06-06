@@ -37,8 +37,8 @@ const setFeedbackRoutes = (app: Express, connection: Connection) => {
     const points: number = body.points;
 
     // TODO: Make a validation funtions later
-    if (points > 5 || points < 0) {
-      return res.status(422).send("Points can only be from 0 to 5");
+    if (points > 5 || points < 1) {
+      return res.status(422).send("Points can only be from 1 to 5");
     }
 
     const comment: string = body.comment;
@@ -51,8 +51,20 @@ const setFeedbackRoutes = (app: Express, connection: Connection) => {
     feedback.user = user;
 
     // Find the performance that this belong to
-    const performance = await performanceRepository.findOne(body.performanceId);
-    feedback.performance = performance;
+    const performance = await performanceRepository.findOne(
+      body.performanceId,
+      { relations: ["reviewers"] }
+    );
+
+    // Remove the sumbmitted user from the assigned list
+    const newReviewers = performance.reviewers.filter(
+      reviewer => `${reviewer.id}` !== `${body.userId}`
+    );
+
+    performance.reviewers = newReviewers;
+    const newPerformance = await performanceRepository.save(performance);
+
+    feedback.performance = newPerformance;
 
     const result = await feedbackRepository.save(feedback);
 
