@@ -4,7 +4,7 @@ WORKDIR /usr/local/paypay_back
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --silent
 
 COPY . .
 
