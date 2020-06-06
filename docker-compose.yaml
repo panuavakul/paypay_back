@@ -1,0 +1,17 @@
+version: "3"
+services:
+  backend:
+    build: .
+    container_name: paypay_challenge_backend
+    depends_on:
+      - "postgre"
+    ports:
+      - "3080:3080"
+  postgre:
+    image: "postgres:12.3-alpine"
+    container_name: paypay_challenge_postgre
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=paypay
+      - POSTGRES_PASSWORD=password

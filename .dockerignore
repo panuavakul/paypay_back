@@ -1,0 +1,5 @@
+node_modules
+dist
+.gitignore
+npm-debug.log
+docker-compose.yaml
