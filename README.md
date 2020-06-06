@@ -10,8 +10,10 @@ This is the backend of the Paypay Interview Coding challenge. This project is im
 # How to run
 
 ```
-docker-compose up
+docker-compose up -d
 ```
+
+※ It might take a little time for the service to start
 
 # Parts
 
